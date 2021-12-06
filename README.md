@@ -96,7 +96,38 @@ fabrica_ambiente.write.mode("overwrite")saveAsTable("fabrica.dados_ambiente", fo
 
 Com isso, a ingestão dos dados está completa e o datawarehouse está pronto.
 
+Agora vamos fazer algumas querys para descobrir o motivo da queda de receita na empresa. Vamos começar dando uma olhada nas tabelas que estão no database "fabrica" e na descrição da tabela "maq_producao".
+
+![fabrica_desc_maq_producao](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/Imagens/DB%20fabrica%20DESC%20maq_producao.png)
 
 
+Podemos medir a produção de cada fábrica e ver se tem alguma coisa anormal e criar uma tabela temporária com resultado para consultas posteriores.
+```
+media_producao = spark.sql(" \
+SELECT fabrica_id, maquina_id, ROUND(AVG(unidades_por_dia),0) AS media_unidade_produzida \
+FROM maq_producao \
+GROUP BY fabrica_id, maquina_id \
+ORDER BY fabrica_id, maquina_id ASC")
+
+media_producao.createOrReplaceTempView("media_Producao")
+```
+
+Com a tabela "media_producao" pronta, podemos fazer uma query para descobrir qual a média de receita de cada fábrica.
+```
+receita = spark.sql(" \
+SELECT fabrica_id, SUM(receita) AS total_receita \
+FROM (SELECT fabrica_id, (media_unidade_produzida * receita_por_unidade) AS receita \
+       FROM media_producao mp JOIN maq_receita mr \
+       ON mp.maquina_id = mr.maquina_id) \
+GROUP BY fabrica_id \
+ORDER BY fabrica_id ASC")
+```
+
+Muito bem, abaixo temos a imagem que mostra a receita de cada fábrica e descobrimos que tem algo errado com a fábrica 2. Muito provável que ela seja a culpada da queda de faturamento do ano.
+
+![RECEITA](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/Imagens/receita.png)
+
+
+Vamos olhar com mais cuidado o que aconteceu com essa fábrica.
 
 
