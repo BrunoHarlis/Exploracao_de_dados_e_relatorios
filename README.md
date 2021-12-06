@@ -22,7 +22,7 @@ func_ferias = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_feria
 func_logs = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_logs.csv", header=True, inferSchema=True)
 maq_producao = spark.read.csv("hdfs:///tmp/data/exploracaodados/maquina_producao.csv", header=True, inferSchema=True)
 maq_tempo_ativa = spark.read.csv("hdfs:///tmp/data/exploracaodados/maquina_tempo_ativa.csv", header=True, inferSchema=True)
-fabrica_receita = spark.read.csv("hdfs:///tmp/data/exploracaodados/fabrica_receita.csv", header=True, inferSchema=true)
+fabrica_receita = spark.read.csv("hdfs:///tmp/data/exploracaodados/fabrica_receita.csv", header=True, inferSchema=True)
 fabrica_ambiente = spark.read.csv("hdfs:///tmp/data/exploracaodados/fabrica_ambiente.csv", header=True, inferSchema=True)
 ```
 
@@ -58,15 +58,15 @@ func_dados.write.mode("overwrite").saveAsTable("rh.funcionario", format="parquet
 
 Entretanto, para criar a tabela "fabrica", vamos usar o DataFrame "func_dados" e pegar apenas a coluna "fabria_id". A tabela conterá somente isso.
 ```
-fabrica_id = func_dados.filter(col("fabrica_id").distinct().sort("fabrica_id")
+fabrica_id = func_dados.select("fabrica_id").distinct().sort("fabrica_id")
 fabrica_id.write.mode("overwrite").saveAsTable("rh.fabrica", format="parquet")
 ```
 
 A criação da tabela "tempo_licenca" será uma pouco mais complexa. Vamos aos passo:
 1 - criar um dataframe (dias_doente) que contenha os funcionários que estiveram doentes. Usar o dataframe "func_doente".
-2 - renomear a coluna "tipo_licenca" para "doente".
+2 - criar a coluna "tipo_licenca" com valores "doente".
 3 - criar outro dataframe (dias_ferias) que contenha os funcionários que tiraram férias. Usar o dataframe "func_ferias".
-4 - renomear a coluna "tipo_licenca" para "ferias".
+4 - criar a coluna "tipo_licenca" com valores "ferias".
 5 - fazer a união dos dataframes "dias_doente" e "dias_ferias".
 6 - fazer um select somente com as colunas que temos interesse ("fabrica_id", "funcionario_id", "data", "tipo_licenca").
 7 - finalmente criar a tabela no hive e inserir os dados nela.
@@ -82,7 +82,7 @@ tempo_licenca.write.mode("overwrite").saveAsTable("rh.tempo_licenca", format="pa
 
 Criar a tabela "tempo_trabalho" a partir do dataframe "tempo_trabalho" renomeando a coluna "data" para "dia_trabalhado".
 ```
-tempo_trabalhado = funncionario_logs.withColumnRenamed("data", "dia_trabalhado")
+tempo_trabalhado = func_logs.withColumnRenamed("data", "dia_trabalhado")
 tempo_trabalhado.write.mode("overwrite").saveAsTable("tempo_trabalhado", format="parquet")
 ```
 
@@ -90,11 +90,13 @@ Criar a tabela "maq_producao", "maq_temp_ativa", "maq_receita" e "dados_ambiente
 ```
 maq_producao.write.mode("overwrite").saveAsTable("fabrica.maq_producao", format="parquet")
 maq_tempo_atica.write.mode("overwrite").saveAsTable("fabrica.maq_temp_ativa", format="parquet")
-fabrica_receita.write.mode("overwrite").saveAsTable("fabrica.maq_receita", format="parquent")
+fabrica_receita.write.mode("overwrite").saveAsTable("fabrica.maq_receita", format="parquet")
 fabrica_ambiente.write.mode("overwrite")saveAsTable("fabrica.dados_ambiente", format="parquet")
 ```
 
-Com isso, o datawarehouse está pronto.
+Com isso, a ingestão dos dados está completa e o datawarehouse está pronto.
+
+
 
 
 
