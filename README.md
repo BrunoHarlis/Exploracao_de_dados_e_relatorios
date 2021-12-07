@@ -1,11 +1,11 @@
-# Exploração De Dados e Relatórios
+# Exploração de Dados e Relatórios
 
 ## Descrição
-Nesse projeto estaremos analisando um conjunto de dados sintéticos para uma empresa fictícia que possui várias fábricas de alta tecnologia em todo o mundo. Recentemente, foi notado que houve uma queda na receita no ano atual. Recebemos a tarefa de pesquisar os dados para tentar encontrar quaisquer causas potenciais para explicar o porquê disso.
+Nesse projeto estaremos analisando um conjunto de dados sintéticos para uma empresa fictícia que possui várias fábricas de alta tecnologia em todo o mundo. Recentemente foi notado que houve uma queda na receita no ano atual. Recebemos a tarefa de pesquisar os dados para tentar encontrar quaisquer potenciais causas que possam explicar o porquê disso.
  
 ## Iniciando
 
-Vamos criar nosso DataBase fictício e fazer a incerção dos dados. Começamos importando bibliotecas e defininso Spark Session.
+Vamos criar nosso DataBase fictício e fazer a incerção dos dados. Começamos importando bibliotecas e definindo Spark Session.
 ```
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
@@ -129,5 +129,12 @@ Muito bem, abaixo temos a imagem que mostra a receita de cada fábrica e descobr
 
 
 Vamos olhar com mais cuidado o que aconteceu com essa fábrica.
+```
+fabrica_2 = spark.sql(" \
+SELECT maquina_id, ROUND(AVG(horas_operando),0) AS media_horas_operando \
+FROM maq_temp_ativa \
+WHERE fabrica_id = 2 \
+GROUP BY maquina_id \
+ORDER BY maquina_id ASC")
 
 
