@@ -11,21 +11,23 @@ spark.conf.set("spark.sql.legacy.allowCreatingManagedTableUsingNonemptyLocation"
 #*************************************************
 # CRIAR DATAFAMES
 #*************************************************
-print("INICIANDO OS TRABALHOS...\n\n")
-func_dados = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_dados.csv", header=True, inferSchema=True)
-func_doente = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_doente.csv", header=True, inferSchema=True)
-func_ferias = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_ferias.csv", header=True, inferSchema=True)
-func_logs = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_logs.csv", header=True, inferSchema=True)
-maq_producao = spark.read.csv("hdfs:///tmp/data/exploracaodados/maquina_producao.csv", header=True, inferSchema=True)
-maq_tempo_ativa = spark.read.csv("hdfs:///tmp/data/exploracaodados/maquina_tempo_ativa.csv", header=True, inferSchema=True)
-fabrica_receita = spark.read.csv("hdfs:///tmp/data/exploracaodados/fabrica_receita.csv", header=True, inferSchema=True)
-fabrica_ambiente = spark.read.csv("hdfs:///tmp/data/exploracaodados/fabrica_ambiente.csv", header=True, inferSchema=True)
-
+print("INICIANDO OS TRABALHOS\n\n")
+print("CARREGANDO ARQUIVOS...")
+func_dados = spark.read.csv("hdfs:///tmp/exploracaodados/funcionario_dados.csv", header=True, inferSchema=True)
+func_doente = spark.read.csv("hdfs:///tmp/exploracaodados/funcionario_doente.csv", header=True, inferSchema=True)
+func_ferias = spark.read.csv("hdfs:///tmp/exploracaodados/funcionario_ferias.csv", header=True, inferSchema=True)
+func_logs = spark.read.csv("hdfs:///tmp/exploracaodados/funcionario_logs.csv", header=True, inferSchema=True)
+maq_producao = spark.read.csv("hdfs:///tmp/exploracaodados/maquina_producao.csv", header=True, inferSchema=True)
+maq_tempo_ativa = spark.read.csv("hdfs:///tmp/exploracaodados/maquina_tempo_ativa.csv", header=True, inferSchema=True)
+fabrica_receita = spark.read.csv("hdfs:///tmp/exploracaodados/fabrica_receita.csv", header=True, inferSchema=True)
+fabrica_ambiente = spark.read.csv("hdfs:///tmp/exploracaodados/fabrica_ambiente.csv", header=True, inferSchema=True)
+print("ARQUIVOS PRONTOS\n\n")
  
 
 #*************************************************
 # DROP DATABASES
 #*************************************************
+print("CRIANDO DATABASE...")
 spark.sql("DROP DATABASE IF EXISTS rh CASCADE")
 spark.sql("DROP DATABASE IF EXISTS fabrica CASCADE")
 
@@ -35,12 +37,14 @@ spark.sql("DROP DATABASE IF EXISTS fabrica CASCADE")
 #*************************************************
 spark.sql("CREATE DATABASE rh")
 spark.sql("CREATE DATABASE fabrica")
+print("DATABASE PRONTO\n\n")
 
 
 
 #*************************************************
 # CRIAR E INSERIR TABELA RH.FUNCIONARIO
 #*************************************************
+print("CRIANDO TABELAS...")
 func_dados.write.mode("overwrite").saveAsTable("rh.funcionario", format="parquet")
 
 
@@ -70,31 +74,21 @@ tempo_licenca.write.mode("overwrite").saveAsTable("rh.tempo_licenca", format="pa
 # CRIAR E INSERIR TABELA RH.TEMPO_TRABALHADO
 #*************************************************
 tempo_trabalhado = func_logs.withColumnRenamed("data", "dia_trabalhado")
-tempo_trabalhado.write.mode("overwrite").saveAsTable("rh.tempo_trabalhado", format="parquet")
+tempo_trabalhado.write.mode("overwrite").saveAsTable("tempo_trabalhado", format="parquet")
 
 
 #*************************************************
-# CRIAR E INSERIR TABELA FABRICA.MAQ_PRODUCAO
+# CRIAR E INSERIR TABELAS: FABRICA.MAQ_PRODUCAO
+#                          FABRICA.MAQ_TEMP_ATIVA
+#                          FABRICA.MAQ_RECEITA
+#                          FABRICA.DADOS_AMBIENTE
 #*************************************************
 maq_producao.write.mode("overwrite").saveAsTable("fabrica.maq_producao", format="parquet")
-
-
-#*************************************************
-# CRIAR E INSERIR TABELA FABRICA.MAQ_TEMPO_ATIVA
-#*************************************************
 maq_tempo_ativa.write.mode("overwrite").saveAsTable("fabrica.maq_temp_ativa", format="parquet")
-
-
-#*************************************************
-# CRIAR E INSERIR TABELA FABRICA.MAQ_RECEITA
-#*************************************************
 fabrica_receita.write.mode("overwrite").saveAsTable("fabrica.maq_receita", format="parquet")
-
-
-#*************************************************
-# CRIAR E INSERIR TABELA FABRICA.DADOS_AMBIENTE
-#*************************************************
 fabrica_ambiente.write.mode("overwrite").saveAsTable("fabrica.dados_ambiente", format="parquet")
+print("TABELAS PRONTAS\n\n")
 
-print("\n\nFIM DO PROGRAMA\n\n")
+
+print("\nFIM DO PROGRAMA\n")
 spark.stop()
