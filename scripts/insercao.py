@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 
@@ -9,6 +11,7 @@ spark.conf.set("spark.sql.legacy.allowCreatingManagedTableUsingNonemptyLocation"
 #*************************************************
 # CRIAR DATAFAMES
 #*************************************************
+print("INICIANDO OS TRABALHOS...\n\n")
 func_dados = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_dados.csv", header=True, inferSchema=True)
 func_doente = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_doente.csv", header=True, inferSchema=True)
 func_ferias = spark.read.csv("hdfs:///tmp/data/exploracaodados/funcionario_ferias.csv", header=True, inferSchema=True)
@@ -92,3 +95,6 @@ fabrica_receita.write.mode("overwrite").saveAsTable("fabrica.maq_receita", forma
 # CRIAR E INSERIR TABELA FABRICA.DADOS_AMBIENTE
 #*************************************************
 fabrica_ambiente.write.mode("overwrite").saveAsTable("fabrica.dados_ambiente", format="parquet")
+
+print("\n\nFIM DO PROGRAMA\n\n")
+spark.stop()
