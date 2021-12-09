@@ -5,7 +5,7 @@ Nesse projeto estaremos analisando um conjunto de dados sintéticos para uma emp
  
 ## Iniciando
 
-Vamos criar nosso DataBase fictício e fazer a incerção dos dados. Começamos importando bibliotecas e definindo Spark Session.
+Vamos criar nosso DataBase fictício e fazer a incerção dos dados. Aqui está o [script em python para a inserção dos dados](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/scripts/insercao.py). Começamos importando bibliotecas e definindo Spark Session.
 ~~~python
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
@@ -96,12 +96,14 @@ fabrica_ambiente.write.mode("overwrite").saveAsTable("fabrica.dados_ambiente", f
 
 Com isso, a ingestão dos dados está completa e o datawarehouse está pronto.
 
-Agora vamos fazer algumas querys pasparra descobrir o motivo da queda de receita na empresa. Vamos começar dando uma olhada nas tabelas que estão no database "fabrica" e na descrição da tabela "maq_producao".
+## Realizando Consultas
+
+Agora vamos fazer algumas querys parra descobrir o motivo da queda de receita na empresa. Vamos começar dando uma olhada nas tabelas que estão no database "fabrica" e na descrição da tabela "maq_producao". [As querys em SQL estão aqui.]()
 
 ![fabrica_desc_maq_producao](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/Imagens/DB%20fabrica%20DESC%20maq_producao.png)
 
 
-Podemos medir a produção de cada fábrica e ver se tem alguma coisa anormal e criar uma tabela temporária com resultado para consultas posteriores.
+Podemos medir a produção de cada fábrica e ver se tem alguma coisa anormal e criar uma tabela temporária com O resultado para consultas posteriores.
 ```python
 media_producao = spark.sql(" \
 SELECT fabrica_id, maquina_id, ROUND(AVG(unidades_por_dia),0) AS media_unidade_produzida \
