@@ -98,7 +98,7 @@ Com isso, a ingestão dos dados está completa e o datawarehouse está pronto.
 
 ## Realizando Consultas
 
-Agora vamos fazer algumas querys parra descobrir o motivo da queda de receita na empresa. Vamos começar dando uma olhada nas tabelas que estão no database "fabrica" e na descrição da tabela "maq_producao". [As querys em SQL estão aqui.]()
+Agora vamos fazer algumas querys parra descobrir o motivo da queda de receita na empresa. Vamos começar dando uma olhada nas tabelas que estão no database "fabrica" e na descrição da tabela "maq_producao". [A query em SQL está aqui](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/scripts/query.sql).
 
 ![fabrica_desc_maq_producao](https://github.com/BrunoHarlis/Exploracao_de_dados_e_relatorios/blob/main/Imagens/DB%20fabrica%20DESC%20maq_producao.png)
 
