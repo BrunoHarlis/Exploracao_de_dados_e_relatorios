@@ -63,13 +63,13 @@ fabrica_id.write.mode("overwrite").saveAsTable("rh.fabrica", format="parquet")
 ```
 
 A criação da tabela "tempo_licenca" será uma pouco mais complexa. Vamos aos passo:
-1 - criar um dataframe (dias_doente) que contenha os funcionários que estiveram doentes. Usar o dataframe "func_doente".
-2 - criar a coluna "tipo_licenca" com valores "doente".
-3 - criar outro dataframe (dias_ferias) que contenha os funcionários que tiraram férias. Usar o dataframe "func_ferias".
-4 - criar a coluna "tipo_licenca" com valores "ferias".
-5 - fazer a união dos dataframes "dias_doente" e "dias_ferias".
-6 - fazer um select somente com as colunas que temos interesse ("fabrica_id", "funcionario_id", "data", "tipo_licenca").
-7 - finalmente criar a tabela no hive e inserir os dados nela.
+1. criar um dataframe (dias_doente) que contenha os funcionários que estiveram doentes. Usar o dataframe "func_doente".
+2. criar a coluna "tipo_licenca" com valores "doente".
+3. criar outro dataframe (dias_ferias) que contenha os funcionários que tiraram férias. Usar o dataframe "func_ferias".
+4. criar a coluna "tipo_licenca" com valores "ferias".
+5. fazer a união dos dataframes "dias_doente" e "dias_ferias".
+6. fazer um select somente com as colunas que temos interesse ("fabrica_id", "funcionario_id", "data", "tipo_licenca").
+7. finalmente criar a tabela no hive e inserir os dados nela.
 ```python
 dias_doente = func_doente.filter(col("doente") == 1)
 dias_doente = dias_doente.withColumn("tipo_licenca", lit("doente"))
@@ -94,7 +94,7 @@ fabrica_receita.write.mode("overwrite").saveAsTable("fabrica.maq_receita", forma
 fabrica_ambiente.write.mode("overwrite").saveAsTable("fabrica.dados_ambiente", format="parquet")
 ```
 
-Com isso, a ingestão dos dados está completa e o datawarehouse está pronto.
+Com isso, a ingestão dos dados no datawarehouse está completa e pronto para uso.
 
 ## Realizando Consultas
 
@@ -193,3 +193,6 @@ tempo_licenca_funcionario.show()
 
 
 Os funcionários da fábrica 2 têm um maior número de dias de baixa por doença. Parece que, ao contrário das outras fábricas, os funcionários da fábrica 2 possuem uma quantidade desproporcional de licença médica e menos férias. Como isso é exclusivo da fábrica 2, parece digno de ser relatado como uma potencial causa na queda da receita.
+
+## Conclusão
+Nese projeto foi mostrado como é feito o carregamento de arquivos .csv a partir do hdfs através do Spark, em seguida os dados de alguns dataframes foram tratados com a realização de filtros, selects, criação de colunas, etc. Foi criado um banco de dados no Hive e tabelas para esse banco usando dataframes, deixando os dados prontos para uso. Com as tabelas prontas para uso no Hive, foi possível realizar consultas e análises para descobrir o motivo da perda de receita da empresa.
